@@ -1,0 +1,2252 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>cakes clicker🎂</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    background: linear-gradient(180deg, #5ec8ff 0%, #8fdcff 45%, #cdf3ff 75%, #ffe9c2 100%);
+    cursor: pointer;
+    font-family: 'Comic Sans MS', 'Segoe UI', sans-serif;
+  }
+
+  .sol {
+    position: fixed;
+    top: 40px;
+    right: 60px;
+    font-size: clamp(40px, 9vw, 70px);
+    z-index: 0;
+    pointer-events: none;
+    user-select: none;
+    animation: girarSol 25s linear infinite;
+  }
+
+  @keyframes girarSol {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  .nube {
+    position: fixed;
+    z-index: 0;
+    pointer-events: none;
+    background: #ffffff;
+  }
+
+  .nube-chica {
+    width: 80px; height: 34px; border-radius: 30px;
+    animation: flotarNube linear infinite;
+  }
+  .nube-chica::before, .nube-chica::after { content:""; position:absolute; background:#fff; border-radius:50%; }
+  .nube-chica::before { width:46px; height:46px; top:-25px; left:8px; }
+  .nube-chica::after  { width:34px; height:34px; top:-16px; right:8px; }
+
+  .nube-mediana {
+    width: 115px; height: 46px; border-radius: 40px;
+    animation: flotarNube linear infinite;
+  }
+  .nube-mediana::before, .nube-mediana::after { content:""; position:absolute; background:#fff; border-radius:50%; }
+  .nube-mediana::before { width:62px; height:62px; top:-33px; left:12px; }
+  .nube-mediana::after  { width:48px; height:48px; top:-22px; right:12px; }
+
+  .nube-grande {
+    width: 160px; height: 62px; border-radius: 50px;
+    animation: flotarNube linear infinite;
+  }
+  .nube-grande::before, .nube-grande::after { content:""; position:absolute; background:#fff; border-radius:50%; }
+  .nube-grande::before { width:85px; height:85px; top:-45px; left:18px; }
+  .nube-grande::after  { width:65px; height:65px; top:-30px; right:15px; }
+
+  @keyframes flotarNube {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(calc(100vw + 300px)); }
+  }
+
+  .instrucciones {
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: white;
+    text-shadow: 2px 2px 6px rgba(0,0,0,0.3);
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .instrucciones h1 { font-size: 2.2rem; margin-bottom: 10px; }
+  .instrucciones p { font-size: 1.1rem; opacity: 0.9; }
+
+  .keke {
+    position: absolute;
+    pointer-events: none;
+    user-select: none;
+    animation: caer 1.8s cubic-bezier(0.4, 0.1, 0.4, 1) forwards, girar 1.8s ease-in-out forwards;
+    z-index: 10;
+  }
+
+  .keke-emoji {
+    display: block;
+    font-size: clamp(28px, 8vw, 45px);
+    position: relative;
+  }
+
+  /* Skin: gorrito fino arriba */
+  .skin-gorrito .keke-emoji::before {
+    content: "";
+    position: absolute;
+    top: -16px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-bottom: 20px solid #ff5da2;
+    filter: drop-shadow(0 0 2px #ffea00);
+  }
+  .skin-gorrito .keke-emoji::after {
+    content: "";
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #ffea00;
+  }
+
+  /* Skin: dorado */
+  .skin-dorado .keke-emoji {
+    filter: sepia(1) saturate(6) hue-rotate(-10deg) brightness(1.25) drop-shadow(0 0 8px gold);
+  }
+
+  /* Skin: gigante */
+  .skin-gigante .keke-emoji { font-size: clamp(55px, 16vw, 90px); }
+
+  /* Skin: arcoiris */
+  .skin-arcoiris .keke-emoji {
+    filter: drop-shadow(0 0 6px #ff004c) drop-shadow(0 0 10px #7873f5);
+    animation: arcoiris 1.2s linear infinite;
+  }
+  @keyframes arcoiris {
+    0% { filter: hue-rotate(0deg) drop-shadow(0 0 8px magenta); }
+    100% { filter: hue-rotate(360deg) drop-shadow(0 0 8px magenta); }
+  }
+
+  /* Skin: fantasma */
+  .skin-fantasma .keke-emoji {
+    opacity: 0.55;
+    filter: grayscale(0.6) brightness(1.4) drop-shadow(0 0 10px #b8f2ff);
+  }
+
+  /* Skin: corona real */
+  .skin-corona .keke-emoji {
+    filter: sepia(1) saturate(5) hue-rotate(-15deg) brightness(1.3) drop-shadow(0 0 10px #ffd700);
+  }
+  .skin-corona .keke-emoji::before {
+    content: "👑";
+    position: absolute;
+    top: -22px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 20px;
+    filter: drop-shadow(0 0 4px #ffd700);
+  }
+
+  /* Skin: cósmico */
+  .skin-cosmico .keke-emoji {
+    filter: hue-rotate(200deg) saturate(2) brightness(1.15) drop-shadow(0 0 10px #7873f5);
+    animation: cosmico 2s linear infinite;
+  }
+  @keyframes cosmico {
+    0%   { filter: hue-rotate(180deg) saturate(2.5) drop-shadow(0 0 10px #7873f5); }
+    50%  { filter: hue-rotate(260deg) saturate(2.5) drop-shadow(0 0 14px #ec38bc); }
+    100% { filter: hue-rotate(180deg) saturate(2.5) drop-shadow(0 0 10px #7873f5); }
+  }
+  .skin-cosmico .keke-emoji::before {
+    content: "✨";
+    position: absolute;
+    top: -16px;
+    left: -10px;
+    font-size: 14px;
+  }
+  .skin-cosmico .keke-emoji::after {
+    content: "✨";
+    position: absolute;
+    bottom: -6px;
+    right: -10px;
+    font-size: 12px;
+  }
+
+  /* Skin: diamante */
+  .skin-diamante .keke-emoji {
+    filter: grayscale(0.3) saturate(3) hue-rotate(150deg) brightness(1.5) drop-shadow(0 0 14px #a8e6ff);
+  }
+  .skin-diamante .keke-emoji::before {
+    content: "💎";
+    position: absolute;
+    top: -14px;
+    right: -12px;
+    font-size: 16px;
+  }
+
+  /* Skin: fénix */
+  .skin-fenix .keke-emoji {
+    filter: saturate(2.5) hue-rotate(-20deg) brightness(1.2) drop-shadow(0 0 14px #ff6a00);
+    animation: fenix 0.9s ease-in-out infinite;
+  }
+  @keyframes fenix {
+    0%, 100% { filter: saturate(2.5) hue-rotate(-20deg) brightness(1.2) drop-shadow(0 0 10px #ff6a00); }
+    50%      { filter: saturate(2.8) hue-rotate(-10deg) brightness(1.35) drop-shadow(0 0 20px #ff2e00); }
+  }
+
+  /* Skins de fusión: aspecto único y reconocible para cualquier combinación */
+  [class*="skin-fusion-"] .keke-emoji {
+    filter: saturate(2.2) brightness(1.25) drop-shadow(0 0 14px #ffd700);
+    animation: fusionBrillo 2.5s linear infinite;
+  }
+  @keyframes fusionBrillo {
+    0%   { filter: hue-rotate(0deg) saturate(2.2) brightness(1.25) drop-shadow(0 0 14px #ffd700); }
+    50%  { filter: hue-rotate(180deg) saturate(2.5) brightness(1.35) drop-shadow(0 0 18px #ec38bc); }
+    100% { filter: hue-rotate(360deg) saturate(2.2) brightness(1.25) drop-shadow(0 0 14px #ffd700); }
+  }
+  [class*="skin-fusion-"] .keke-emoji::before {
+    content: "🌟";
+    position: absolute;
+    top: -18px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 16px;
+  }
+
+  @keyframes caer {
+    0%   { transform: translateY(0) scale(1); opacity: 1; }
+    85%  { transform: translateY(67vh) scale(1); opacity: 1; }
+    92%  { transform: translateY(64vh) scale(1.15, 0.85); opacity: 1; }
+    100% { transform: translateY(70vh) scale(1); opacity: 0; }
+  }
+
+  @keyframes girar {
+    0%   { rotate: 0deg; }
+    100% { rotate: 20deg; }
+  }
+
+  .texto-flotante {
+    position: absolute;
+    pointer-events: none;
+    user-select: none;
+    font-weight: bold;
+    font-size: clamp(15px, 4vw, 22px);
+    color: #fff;
+    text-shadow: 1px 1px 4px rgba(0,0,0,0.4);
+    z-index: 15;
+    animation: flotar 0.9s ease-out forwards;
+  }
+
+  @keyframes flotar {
+    0% { transform: translateY(0); opacity: 1; }
+    100% { transform: translateY(-50px); opacity: 0; }
+  }
+
+  .texto-flotante.perdida { color: #ff4d4d; }
+
+  .llanura-sombra {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 42vh;
+    z-index: 1;
+    pointer-events: none;
+    transform: translateY(9px);
+    clip-path: polygon(
+      0% 38%, 12% 24%, 28% 33%, 45% 14%, 62% 30%,
+      80% 18%, 100% 26%, 100% 100%, 0% 100%
+    );
+    background: #6fa8d8;
+  }
+
+  .llanura {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 42vh;
+    z-index: 2;
+    pointer-events: none;
+    clip-path: polygon(
+      0% 38%, 12% 24%, 28% 33%, 45% 14%, 62% 30%,
+      80% 18%, 100% 26%, 100% 100%, 0% 100%
+    );
+    background:
+      radial-gradient(ellipse 45% 18% at 30% 12%, rgba(255,255,255,0.55) 0%, transparent 70%),
+      radial-gradient(ellipse 35% 16% at 75% 20%, rgba(255,255,255,0.4) 0%, transparent 70%),
+      linear-gradient(to bottom,
+        #a9d9f7 0%, #a9d9f7 30%,
+        #7ec2ec 30%, #7ec2ec 42%,
+        #ffc2e0 42%, #ffc2e0 66%,
+        #ff97c9 66%, #ff97c9 86%,
+        #fff8f0 86%, #fff8f0 100%
+      ),
+      radial-gradient(circle, #ffffff 5px, transparent 6px),
+      radial-gradient(circle, #ffe9f4 4px, transparent 5px);
+    background-size:
+      100% 100%,
+      100% 100%,
+      100% 100%,
+      80px 80px,
+      100px 100px;
+    background-position:
+      0 0,
+      0 0,
+      0 0,
+      15px 50px,
+      55px 65px;
+    background-repeat: no-repeat, no-repeat, no-repeat, repeat-x, repeat-x;
+  }
+
+  .keke-fondo {
+    position: fixed;
+    z-index: 0;
+    pointer-events: none;
+    user-select: none;
+    font-size: clamp(80px, 22vw, 160px);
+    opacity: 0.16;
+    filter: blur(1px) drop-shadow(0 0 20px rgba(255,255,255,0.3));
+    animation: pasarFondo 16s linear forwards;
+  }
+
+  @keyframes pasarFondo {
+    0% { transform: translateX(-260px); }
+    100% { transform: translateX(calc(100vw + 260px)); }
+  }
+
+  .oso-goma {
+    position: fixed;
+    width: 30px;
+    height: 46px;
+    z-index: 3;
+    pointer-events: none;
+    user-select: none;
+    animation: caminarOso linear forwards, saltitoOso 0.5s ease-in-out infinite;
+  }
+
+  .oso-goma .cabeza {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 18px;
+    height: 18px;
+    background: currentColor;
+    border-radius: 50%;
+    opacity: 0.88;
+  }
+
+  .oso-goma .oreja {
+    position: absolute;
+    top: -3px;
+    width: 8px;
+    height: 8px;
+    background: currentColor;
+    border-radius: 50%;
+    opacity: 0.88;
+  }
+  .oso-goma .oreja.izq { left: -2px; }
+  .oso-goma .oreja.der { right: -2px; }
+
+  .oso-goma .torso {
+    position: absolute;
+    bottom: 4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 24px;
+    height: 26px;
+    background: currentColor;
+    border-radius: 45% 45% 40% 40% / 55% 55% 45% 45%;
+    opacity: 0.88;
+  }
+
+  .oso-goma .brillo {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    width: 6px;
+    height: 6px;
+    background: rgba(255,255,255,0.75);
+    border-radius: 50%;
+  }
+
+  .oso-goma .brazo {
+    position: absolute;
+    top: 20px;
+    width: 7px;
+    height: 15px;
+    background: currentColor;
+    border-radius: 6px;
+    opacity: 0.88;
+  }
+  .oso-goma .brazo.izq { left: -3px; transform: rotate(-20deg); }
+  .oso-goma .brazo.der { right: -3px; transform: rotate(20deg); }
+
+  .oso-goma .pierna {
+    position: absolute;
+    bottom: 0;
+    width: 8px;
+    height: 13px;
+    background: currentColor;
+    border-radius: 6px;
+    opacity: 0.88;
+  }
+  .oso-goma .pierna.izq { left: 3px; }
+  .oso-goma .pierna.der { right: 3px; }
+
+  @keyframes caminarOso {
+    0%   { transform: translateX(-60px); }
+    100% { transform: translateX(calc(100vw + 60px)); }
+  }
+
+  @keyframes saltitoOso {
+    0%, 100% { margin-top: 0px; }
+    50%      { margin-top: -6px; }
+  }
+
+  .casa-popup {
+    position: fixed;
+    z-index: 4;
+    font-size: 40px;
+    pointer-events: none;
+    user-select: none;
+    animation: popCasa 2.2s ease-out forwards;
+  }
+  @keyframes popCasa {
+    0%   { transform: translateY(20px) scale(0.3); opacity: 0; }
+    15%  { transform: translateY(-12px) scale(1.15); opacity: 1; }
+    28%  { transform: translateY(0) scale(1); opacity: 1; }
+    82%  { transform: translateY(0) scale(1); opacity: 1; }
+    100% { transform: translateY(-18px) scale(0.9); opacity: 0; }
+  }
+
+  .fabrica-popup {
+    position: fixed;
+    z-index: 4;
+    font-size: 62px;
+    pointer-events: none;
+    user-select: none;
+    animation: popFabrica 2.6s ease-out forwards;
+  }
+  @keyframes popFabrica {
+    0%   { transform: translateY(30px) scale(0.2) rotate(-8deg); opacity: 0; }
+    20%  { transform: translateY(-16px) scale(1.2) rotate(4deg); opacity: 1; }
+    35%  { transform: translateY(0) scale(1) rotate(0deg); opacity: 1; }
+    85%  { transform: translateY(0) scale(1) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(-22px) scale(0.9); opacity: 0; }
+  }
+
+  .contador {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    color: white;
+    font-size: 1.1rem;
+    background: rgba(0,0,0,0.2);
+    padding: 8px 16px;
+    border-radius: 20px;
+    user-select: none;
+    pointer-events: none;
+  }
+
+  .contador-kps {
+    position: absolute;
+    top: 62px;
+    right: 20px;
+    color: #fff;
+    font-size: 0.8rem;
+    background: rgba(0,0,0,0.15);
+    padding: 5px 14px;
+    border-radius: 16px;
+    user-select: none;
+    pointer-events: none;
+  }
+
+  .noticiero {
+    position: fixed;
+    top: 14px;
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: min(88vw, 460px);
+    background: rgba(0,0,0,0.6);
+    color: #fff;
+    padding: 10px 18px;
+    border-radius: 14px;
+    font-size: 0.7rem;
+    line-height: 1.5;
+    text-align: center;
+    z-index: 18;
+    pointer-events: none;
+    user-select: none;
+    opacity: 0;
+    transition: opacity 0.6s ease;
+  }
+  .noticiero.mostrar { opacity: 1; }
+  .noticiero .titular { font-weight: bold; margin-bottom: 4px; color: #ffd700; }
+  .noticiero .linea-dialogo { display: block; }
+
+  .panel-botones {
+    position: fixed;
+    right: 25px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    z-index: 20;
+  }
+
+  .panel-izquierda {
+    position: fixed;
+    left: 25px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    z-index: 20;
+  }
+
+  .boton {
+    cursor: pointer;
+    border: none;
+    outline: none;
+    padding: 14px 18px;
+    border-radius: 14px;
+    font-family: inherit;
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: white;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+    transition: transform 0.15s ease, opacity 0.2s ease;
+    max-width: 170px;
+  }
+
+  .boton:hover { transform: scale(1.05); }
+  .boton:active { transform: scale(0.95); }
+  .boton:disabled { background: #999 !important; opacity: 0.75; cursor: default; transform: none !important; }
+
+  .boton-skin { background: linear-gradient(135deg, #ff5da2, #7873f5); }
+  .boton-doble { background: linear-gradient(135deg, #ffd700, #ff8c00); }
+  .boton-cartas { background: linear-gradient(135deg, #333, #7873f5); }
+  .boton-autoclicker { background: linear-gradient(135deg, #2ecc71, #16a085); }
+  .boton-ositos { background: linear-gradient(135deg, #d97a3f, #a85a2a); }
+  .boton-mejoras { background: linear-gradient(135deg, #16a085, #2c3e91); }
+  .boton-logros { background: linear-gradient(135deg, #f5a623, #b8860b); }
+  .boton-renacer { background: linear-gradient(135deg, #24243e, #7873f5, #ec38bc); background-size: 200% 200%; animation: brilloMezclar 5s ease infinite; }
+
+  /* Era moderna: se activa tras el primer renacimiento */
+  body.era-moderna {
+    background: linear-gradient(180deg, #0f0c29 0%, #302b63 55%, #1b1b3a 100%) !important;
+  }
+  body.era-moderna .llanura,
+  body.era-moderna .llanura-sombra {
+    filter: hue-rotate(160deg) saturate(0.5) brightness(0.75);
+  }
+  body.era-moderna .sol {
+    filter: grayscale(0.6) brightness(1.6) drop-shadow(0 0 20px #7873f5);
+  }
+  body.era-moderna .nube,
+  body.era-moderna .nube::before,
+  body.era-moderna .nube::after {
+    background: #4a4a7a;
+    opacity: 0.6;
+  }
+
+  .lista-logros { display: flex; flex-direction: column; gap: 8px; }
+  .item-logro {
+    border: 2px solid #f0f0f0;
+    border-radius: 10px;
+    padding: 10px 12px;
+    background: #fafafa;
+    opacity: 0.6;
+  }
+  .item-logro.desbloqueado { opacity: 1; border-color: #f5a623; background: #fff8ec; }
+  .item-logro.secreto.desbloqueado { border-color: #7873f5; background: #f3f2ff; }
+  .nombre-logro { font-weight: bold; font-size: 0.85rem; color: #444; margin-bottom: 2px; }
+  .desc-logro { font-size: 0.72rem; color: #777; }
+
+  .toast-logro {
+    position: fixed;
+    top: 90px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-20px);
+    background: linear-gradient(135deg, #f5a623, #ec38bc);
+    color: white;
+    padding: 12px 22px;
+    border-radius: 14px;
+    font-size: 0.85rem;
+    text-align: center;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.3);
+    z-index: 60;
+    opacity: 0;
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    pointer-events: none;
+  }
+  .toast-logro.mostrar { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  .boton-mezclar {
+    position: fixed;
+    left: 50%;
+    bottom: 18px;
+    transform: translateX(-50%);
+    z-index: 22;
+    cursor: pointer;
+    border: none;
+    outline: none;
+    padding: 14px 28px;
+    border-radius: 30px;
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: bold;
+    color: white;
+    background: linear-gradient(135deg, #ec38bc, #7873f5, #16a085);
+    background-size: 200% 200%;
+    animation: brilloMezclar 4s ease infinite;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.35);
+    transition: transform 0.15s ease;
+  }
+  .boton-mezclar:hover { transform: translateX(-50%) scale(1.06); }
+  .boton-mezclar:active { transform: translateX(-50%) scale(0.95); }
+
+  @keyframes brilloMezclar {
+    0%   { background-position: 0% 50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  .lista-fusion { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .card-fusion.seleccionada { border-color: #ec38bc; background: #fff0f8; }
+
+  .lista-mejoras {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .lista-mejoras .boton {
+    max-width: none;
+    width: 100%;
+  }
+
+  .shake { animation: shake 0.4s; }
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-6px); }
+    75% { transform: translateX(6px); }
+  }
+
+  /* Menu de skins */
+  .overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 50;
+  }
+  .overlay.activo { display: flex; }
+
+  .menu-skins {
+    background: #fff;
+    border-radius: 20px;
+    padding: 24px;
+    width: min(90vw, 560px);
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+  }
+
+  .menu-skins h2 {
+    color: #7873f5;
+    margin-bottom: 4px;
+    text-align: center;
+  }
+
+  .menu-skins .sub {
+    text-align: center;
+    color: #888;
+    font-size: 0.85rem;
+    margin-bottom: 18px;
+  }
+
+  .lista-skins {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+
+  .card-skin, .card-carta {
+    border: 2px solid #f0f0f0;
+    border-radius: 14px;
+    padding: 14px;
+    text-align: center;
+    background: #fafafa;
+  }
+
+  .card-skin.seleccionado { border-color: #7873f5; background: #f3f2ff; }
+
+  .card-skin .preview { font-size: 40px; margin-bottom: 6px; position: relative; height: 55px; display:flex; align-items:center; justify-content:center; overflow: hidden; }
+
+  /* La vista previa siempre se ve del mismo tamaño, sin importar la skin
+     (el tamaño real de cada skin se ve al soltarse en pantalla) */
+  .card-skin .preview .keke-emoji { font-size: 40px !important; }
+
+  .card-skin .nombre, .card-carta .nombre-carta { font-weight: bold; color: #444; margin-bottom: 4px; font-size: 0.9rem; }
+  .card-skin .precio { color: #ff8c00; font-size: 0.8rem; margin-bottom: 8px; }
+
+  .card-skin button, .card-carta button {
+    cursor: pointer;
+    border: none;
+    border-radius: 10px;
+    padding: 8px 10px;
+    font-family: inherit;
+    font-size: 0.8rem;
+    font-weight: bold;
+    width: 100%;
+    color: white;
+    background: linear-gradient(135deg, #7873f5, #ec38bc);
+  }
+  .card-skin button:disabled, .card-carta button:disabled { background: #bbb; cursor: default; }
+
+  .card-carta .icono { font-size: 34px; margin-bottom: 4px; }
+  .card-carta .desc-carta { font-size: 0.72rem; color: #666; line-height: 1.35; margin-bottom: 10px; min-height: 60px; }
+
+  .badge-color {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 10px;
+    color: #fff;
+    font-size: 0.62rem;
+    font-weight: bold;
+    letter-spacing: 0.03em;
+    margin-bottom: 8px;
+  }
+  .badge-azul { background: #4aa3f0; }
+  .badge-amarillo { background: #f5c518; color: #4a3b00; }
+  .badge-rojo { background: #e0432b; }
+  .badge-negro { background: #1c1c1c; }
+
+  .lista-cartas { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+
+  .panel-cartas-equipadas {
+    position: fixed;
+    left: 20px;
+    bottom: 20px;
+    z-index: 25;
+    color: #fff;
+    text-shadow: 1px 1px 4px rgba(0,0,0,0.35);
+    user-select: none;
+  }
+
+  .titulo-cartas { font-size: 0.85rem; font-weight: bold; margin-bottom: 6px; opacity: 0.9; }
+
+  .slots-cartas { display: flex; gap: 8px; }
+
+  .slot-carta {
+    width: 46px;
+    height: 46px;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.25);
+    border: 2px dashed rgba(255,255,255,0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+  }
+
+  .slot-carta.llena { border-style: solid; background: rgba(255,255,255,0.85); }
+
+  .cerrar-menu {
+    display: block;
+    margin: 18px auto 0;
+    background: none;
+    border: none;
+    color: #999;
+    cursor: pointer;
+    font-size: 0.9rem;
+    text-decoration: underline;
+  }
+  @media (max-width: 640px) {
+    .panel-botones,
+    .panel-izquierda {
+      right: 10px;
+      left: auto;
+      gap: 10px;
+    }
+    .panel-izquierda { left: 10px; right: auto; }
+
+    .boton-mezclar {
+      padding: 10px 20px;
+      font-size: 0.8rem;
+      bottom: 10px;
+    }
+
+    .boton {
+      padding: 10px 12px;
+      font-size: 0.72rem;
+      max-width: 120px;
+      border-radius: 10px;
+    }
+
+    .panel-cartas-equipadas { left: 10px; bottom: 12px; }
+    .titulo-cartas { font-size: 0.7rem; }
+    .slot-carta { width: 34px; height: 34px; font-size: 16px; border-radius: 8px; }
+
+    .contador {
+      top: 10px;
+      right: 10px;
+      font-size: 0.85rem;
+      padding: 6px 12px;
+    }
+
+    .contador-kps {
+      top: 46px;
+      right: 10px;
+      font-size: 0.68rem;
+      padding: 4px 10px;
+    }
+
+    .noticiero {
+      top: 8px;
+      font-size: 0.6rem;
+      padding: 7px 12px;
+      max-width: 80vw;
+    }
+
+    .menu-skins { padding: 16px; width: 92vw; }
+    .menu-skins h2 { font-size: 1.1rem; }
+
+    .lista-skins,
+    .lista-cartas { grid-template-columns: 1fr 1fr; gap: 8px; }
+
+    .card-skin .nombre, .card-carta .nombre-carta { font-size: 0.78rem; }
+    .card-skin .precio, .card-carta .desc-carta { font-size: 0.65rem; }
+    .card-carta .desc-carta { min-height: 45px; }
+
+    .instrucciones h1 { font-size: 1.4rem; }
+    .instrucciones p { font-size: 0.85rem; }
+  }
+
+  @media (max-width: 380px) {
+    .lista-skins,
+    .lista-cartas { grid-template-columns: 1fr; }
+
+    .boton { max-width: 100px; font-size: 0.65rem; padding: 8px 10px; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="sol">☀️</div>
+
+  <div class="nube nube-chica" style="top:8%; left:-150px; animation-duration: 26s;"></div>
+  <div class="nube nube-mediana" style="top:16%; left:-400px; animation-duration: 34s; animation-delay: -10s;"></div>
+  <div class="nube nube-grande" style="top:5%; left:-700px; animation-duration: 42s; animation-delay: -22s;"></div>
+  <div class="nube nube-chica" style="top:22%; left:-950px; animation-duration: 30s; animation-delay: -6s; opacity:0.85;"></div>
+  <div class="nube nube-mediana" style="top:12%; left:-1300px; animation-duration: 38s; animation-delay: -30s; opacity:0.8;"></div>
+
+  <div class="instrucciones">
+    <h1>🎂 Haz click donde quieras 🎂</h1>
+    <p>¡Cada click hace caer un keke!</p>
+  </div>
+
+  <div class="llanura-sombra"></div>
+  <div class="llanura"></div>
+
+  <div class="noticiero" id="noticiero"></div>
+
+  <div class="contador">Kekes: <span id="total">0</span></div>
+  <div class="contador-kps">🐻 <span id="kps">0</span> kekes/seg</div>
+
+  <div class="panel-izquierda">
+    <button class="boton boton-mejoras" id="botonMejoras">Mejoras ⚙️</button>
+    <button class="boton boton-logros" id="botonLogros">Logros 🏆</button>
+    <button class="boton boton-renacer" id="botonRenacer">Renacer 🌌</button>
+  </div>
+
+  <div class="overlay" id="overlayRenacer">
+    <div class="menu-skins" id="contenidoRenacer" style="max-height:85vh;overflow-y:auto;"></div>
+  </div>
+
+  <div class="overlay" id="overlayLogros">
+    <div class="menu-skins" id="contenidoLogros" style="max-height:85vh;overflow-y:auto;"></div>
+  </div>
+
+  <div class="panel-botones">
+    <button class="boton boton-skin" id="botonSkin">Skins 🎨</button>
+    <button class="boton boton-doble" id="botonDoble">Mejorar combo (30)</button>
+    <button class="boton boton-cartas" id="botonCartas">Tienda de cartas 🃏</button>
+  </div>
+
+  <div class="panel-cartas-equipadas">
+    <div class="titulo-cartas">Cartas equipadas</div>
+    <div class="slots-cartas" id="slotsCartas"></div>
+  </div>
+
+  <div class="overlay" id="overlayMejoras">
+    <div class="menu-skins" style="max-height:85vh;overflow-y:auto;">
+      <h2>Mejoras</h2>
+      <div class="sub">Autoclickers (clicks automáticos)</div>
+      <div class="lista-mejoras">
+        <button class="boton boton-autoclicker" id="botonAutoclicker1">Autoclicker I 🤖 (28000)</button>
+        <button class="boton boton-autoclicker" id="botonAutoclicker2">Autoclicker II 🤖🔒</button>
+        <button class="boton boton-autoclicker" id="botonAutoclicker3">Autoclicker III 🤖🔒</button>
+        <button class="boton boton-autoclicker" id="botonAutoclicker4">Autoclicker IV 🤖🔒</button>
+      </div>
+
+      <div class="sub" style="margin-top:18px;">🏭 Casas productoras (kekes/seg) y sus mejoras</div>
+      <div id="contenidoProductores"></div>
+
+      <button class="cerrar-menu" id="cerrarMejoras">Cerrar</button>
+    </div>
+  </div>
+
+  <button class="boton boton-mezclar" id="botonMezclar">🧬 Mezclar</button>
+
+  <div class="overlay" id="overlayMezclar">
+    <div class="menu-skins" id="contenidoMezclar"></div>
+  </div>
+
+  <div class="overlay" id="overlayCartas">
+    <div class="menu-skins" id="contenidoCartas"></div>
+  </div>
+
+  <div class="overlay" id="overlaySkins">
+    <div class="menu-skins">
+      <h2>Elige tu skin de keke</h2>
+      <div class="sub">Compra y selecciona el que más te guste</div>
+      <div class="lista-skins" id="listaSkins"></div>
+      <button class="cerrar-menu" id="cerrarMenu">Cerrar</button>
+    </div>
+  </div>
+
+  <script>
+    /* ---------- Datos de skins ---------- */
+    const skins = [
+      { id: 'skin-clasico',  nombre: 'Clásico',       emoji: '🎂', costo: 0,     comprado: true  },
+      { id: 'skin-gorrito',  nombre: 'Gorrito',  emoji: '🎂', costo: 50,    comprado: false,
+        habilidad: { bonusFijo: 1 }, descHabilidad: '+1 keke extra por click' },
+      { id: 'skin-dorado',   nombre: 'Dorado',        emoji: '🎂', costo: 150,   comprado: false },
+      { id: 'skin-gigante',  nombre: 'Gigante',       emoji: '🎂', costo: 250,   comprado: false },
+      { id: 'skin-arcoiris', nombre: 'Arcoíris',      emoji: '🎂', costo: 400,   comprado: false },
+      { id: 'skin-fantasma', nombre: 'Fantasma',      emoji: '🎂', costo: 600,   comprado: false },
+      { id: 'skin-corona',   nombre: 'Corona Real',   emoji: '🎂', costo: 2500,  comprado: false,
+        habilidad: { porcentaje: 0.15 }, descHabilidad: '+15% kekes por click' },
+      { id: 'skin-cosmico',  nombre: 'Cósmico',       emoji: '🎂', costo: 4500,  comprado: false,
+        habilidad: { duplicar: 0.10 }, descHabilidad: '10% de probabilidad de duplicar el click' },
+      { id: 'skin-diamante', nombre: 'Diamante',      emoji: '🎂', costo: 8000,  comprado: false,
+        habilidad: { porcentaje: 0.40 }, descHabilidad: '+40% kekes por click' },
+      { id: 'skin-fenix',    nombre: 'Fénix',         emoji: '🎂', costo: 15000, comprado: false,
+        habilidad: { porcentaje: 1.00 }, descHabilidad: '+100% kekes por click' },
+
+      { id: 'skin-caramelo',  nombre: 'Caramelo',        emoji: '🎂', costo: 900,   comprado: false,
+        habilidad: { bonusFijo: 3 }, descHabilidad: '+3 kekes extra por click' },
+      { id: 'skin-menta',     nombre: 'Menta Fresca',    emoji: '🎂', costo: 1300,  comprado: false,
+        habilidad: { porcentaje: 0.08 }, descHabilidad: '+8% kekes por click' },
+      { id: 'skin-frutilla',  nombre: 'Frutilla Silvestre', emoji: '🎂', costo: 1800, comprado: false,
+        habilidad: { bonusFijo: 6 }, descHabilidad: '+6 kekes extra por click' },
+      { id: 'skin-lunar',     nombre: 'Lunar',           emoji: '🎂', costo: 2800,  comprado: false,
+        habilidad: { duplicar: 0.06 }, descHabilidad: '6% de probabilidad de duplicar el click' },
+      { id: 'skin-volcanico', nombre: 'Volcánico',       emoji: '🎂', costo: 3600,  comprado: false,
+        habilidad: { porcentaje: 0.20 }, descHabilidad: '+20% kekes por click' },
+      { id: 'skin-marino',    nombre: 'Abismo Marino',   emoji: '🎂', costo: 5200,  comprado: false,
+        habilidad: { produccionBonus: 0.05 }, descHabilidad: '+5% producción de todas tus casas' },
+      { id: 'skin-real',      nombre: 'Terciopelo Real', emoji: '🎂', costo: 6800,  comprado: false,
+        habilidad: { bonusFijo: 10 }, descHabilidad: '+10 kekes extra por click' },
+      { id: 'skin-glaciar',   nombre: 'Glaciar',         emoji: '🎂', costo: 9500,  comprado: false,
+        habilidad: { porcentaje: 0.50 }, descHabilidad: '+50% kekes por click' },
+      { id: 'skin-tormenta',  nombre: 'Tormenta',        emoji: '🎂', costo: 11000, comprado: false,
+        habilidad: { duplicar: 0.12 }, descHabilidad: '12% de probabilidad de duplicar el click' },
+      { id: 'skin-eclipse',   nombre: 'Eclipse',         emoji: '🎂', costo: 13000, comprado: false,
+        habilidad: { produccionBonus: 0.10 }, descHabilidad: '+10% producción de todas tus casas' },
+    ];
+    let skinActual = skins[0].id;
+
+    /* ---------- Datos de mejora de combo ---------- */
+    const aumentosBase = [2, 4, 5, 10, 20, 25, 30];
+    function getAumento(nCompra) {
+      if (nCompra <= 0) return 1;
+      if (nCompra <= aumentosBase.length) return aumentosBase[nCompra - 1];
+      const arr = [...aumentosBase];
+      while (arr.length < nCompra) {
+        const ultimo = arr[arr.length - 1];
+        arr.push(Math.floor(ultimo * 1.2)); // +20% a partir de ahí
+      }
+      return arr[nCompra - 1];
+    }
+
+    const costosBase = [30, 60, 110, 200, 380, 700, 1300, 2400, 4400, 8000];
+    function getCosto(nCompra) {
+      if (nCompra <= 1) return costosBase[0];
+      if (nCompra <= costosBase.length) return costosBase[nCompra - 1];
+      const arr = [...costosBase];
+      while (arr.length < nCompra) {
+        const ultimo = arr[arr.length - 1];
+        arr.push(Math.floor(ultimo * 1.5)); // +50% a partir de ahí
+      }
+      return arr[nCompra - 1];
+    }
+
+    let comprasMejora = 0;
+    let aumentoActual = 1;
+    let costoMejora = getCosto(1);
+
+    /* ---------- Estado general ---------- */
+    let total = 0;
+
+    // Estadísticas para logros
+    let maxTotalAlcanzado = 0;
+    let contadorClicksManual = 0;
+    let ositoAlgunaVezComprado = false;
+    let logroPuebloSinOsito = false;
+    let cartasObtenidasAlgunaVez = 0;
+    let perdidasPorCartas = 0;
+    let llegoACeroDesdeCienMil = false;
+    let fusionConFenix = false;
+    let bonusLogrosPorcentaje = 0;
+    let rebirths = 0;
+
+    const costoRenacer = 1000000000000; // 1 trillón (1t)
+    let esencia = 0;
+    const arbolRenacimiento = [
+      { id: 'costosBaratos', nombre: 'Costos más baratos', costo: 1, comprado: false,
+        descripcion: '-10% costo permanente de "Mejorar combo".' },
+      { id: 'productoresBaratos', nombre: 'Productores baratos', costo: 2, comprado: false,
+        descripcion: '-10% costo permanente de tus casas productoras.' },
+      { id: 'autoclickVeloz', nombre: 'Autoclick veloz', costo: 2, comprado: false,
+        descripcion: '-10% intervalo permanente de tus autoclickers (más rápidos).' },
+      { id: 'bendicionInicial', nombre: 'Bendición inicial', costo: 3, comprado: false,
+        descripcion: 'Empieza cada renacimiento con 500 kekes gratis.' },
+    ];
+
+    const contadorEl = document.getElementById('total');
+    const instrucciones = document.querySelector('.instrucciones');
+    const botonSkin = document.getElementById('botonSkin');
+    const botonDoble = document.getElementById('botonDoble');
+    const overlaySkins = document.getElementById('overlaySkins');
+    const listaSkins = document.getElementById('listaSkins');
+    const cerrarMenu = document.getElementById('cerrarMenu');
+
+    function formatearNumero(n) {
+      n = Math.floor(n);
+      const signo = n < 0 ? '-' : '';
+      n = Math.abs(n);
+
+      if (n >= 999500000000) {
+        const val = n / 1000000000000;
+        const redondeado = Math.round(val * 10) / 10;
+        return signo + (Number.isInteger(redondeado) ? redondeado : redondeado.toFixed(1)) + 't';
+      }
+      if (n >= 999500000) {
+        const val = n / 1000000000;
+        const redondeado = Math.round(val * 10) / 10;
+        return signo + (Number.isInteger(redondeado) ? redondeado : redondeado.toFixed(1)) + 'b';
+      }
+      if (n >= 1000000) {
+        const val = n / 1000000;
+        const redondeado = Math.round(val * 10) / 10;
+        return signo + (Number.isInteger(redondeado) ? redondeado : redondeado.toFixed(1)) + 'm';
+      }
+      return signo + n;
+    }
+
+    function actualizarContador() {
+      contadorEl.textContent = formatearNumero(total);
+      if (total > maxTotalAlcanzado) maxTotalAlcanzado = total;
+      checkLogros();
+    }
+
+    function actualizarBotonDoble() {
+      const costoFinal = Math.floor(costoMejora * reduccion('costosBaratos'));
+      botonDoble.textContent = `Mejorar combo +${formatearNumero(getAumento(comprasMejora + 1))} (${formatearNumero(costoFinal)})`;
+    }
+
+    function soltarKeke(x, y) {
+      const keke = document.createElement('div');
+      keke.className = 'keke ' + skinActual;
+
+      const emoji = document.createElement('span');
+      emoji.className = 'keke-emoji';
+      emoji.textContent = '🎂';
+      keke.appendChild(emoji);
+
+      keke.style.left = (x - 22) + 'px';
+      keke.style.top = (y - 22) + 'px';
+
+      document.body.appendChild(keke);
+
+      setTimeout(() => keke.remove(), 1800);
+    }
+
+    function mostrarTextoFlotante(x, y, texto, claseExtra) {
+      const el = document.createElement('div');
+      el.className = 'texto-flotante' + (claseExtra ? ' ' + claseExtra : '');
+      el.textContent = texto;
+      el.style.left = x + 'px';
+      el.style.top = (y - 30) + 'px';
+
+      document.body.appendChild(el);
+
+      setTimeout(() => el.remove(), 900);
+    }
+
+    document.body.addEventListener('click', (e) => {
+      if (e.target.closest('.panel-botones') || e.target.closest('.panel-izquierda') || e.target.closest('.overlay') || e.target.closest('.boton-mezclar')) return;
+
+      instrucciones.style.display = 'none';
+      contadorClicksManual++;
+
+      soltarKeke(e.clientX, e.clientY);
+      procesarGananciaClick(e.clientX, e.clientY);
+    });
+
+    /* ---------- Menu de skins ---------- */
+    function renderSkins() {
+      listaSkins.innerHTML = '';
+      skins.forEach(skin => {
+        const card = document.createElement('div');
+        card.className = 'card-skin' + (skin.id === skinActual ? ' seleccionado' : '');
+
+        const preview = document.createElement('div');
+        preview.className = 'preview ' + skin.id;
+        const previewEmoji = document.createElement('span');
+        previewEmoji.className = 'keke-emoji';
+        previewEmoji.textContent = skin.emoji;
+        preview.appendChild(previewEmoji);
+
+        const nombre = document.createElement('div');
+        nombre.className = 'nombre';
+        nombre.textContent = skin.nombre;
+
+        const precio = document.createElement('div');
+        precio.className = 'precio';
+        precio.textContent = skin.comprado ? 'Comprado' : `💰 ${formatearNumero(skin.costo)} kekes`;
+
+        if (skin.descHabilidad) {
+          const habilidad = document.createElement('div');
+          habilidad.className = 'desc-carta';
+          habilidad.style.minHeight = 'auto';
+          habilidad.textContent = '✨ ' + skin.descHabilidad;
+          card.appendChild(preview);
+          card.appendChild(nombre);
+          card.appendChild(habilidad);
+          card.appendChild(precio);
+        } else {
+          card.appendChild(preview);
+          card.appendChild(nombre);
+          card.appendChild(precio);
+        }
+
+        const btn = document.createElement('button');
+        if (skin.id === skinActual) {
+          btn.textContent = 'Seleccionado';
+          btn.disabled = true;
+        } else if (skin.comprado) {
+          btn.textContent = 'Usar';
+          btn.addEventListener('click', () => {
+            skinActual = skin.id;
+            renderSkins();
+          });
+        } else {
+          btn.textContent = 'Comprar';
+          btn.addEventListener('click', () => {
+            if (total >= skin.costo) {
+              total -= skin.costo;
+              actualizarContador();
+              skin.comprado = true;
+              skinActual = skin.id;
+              renderSkins();
+              checkLogros();
+            } else {
+              card.classList.add('shake');
+              setTimeout(() => card.classList.remove('shake'), 400);
+            }
+          });
+        }
+
+        card.appendChild(btn);
+        listaSkins.appendChild(card);
+      });
+    }
+
+    botonSkin.addEventListener('click', () => {
+      renderSkins();
+      overlaySkins.classList.add('activo');
+    });
+
+    cerrarMenu.addEventListener('click', () => {
+      overlaySkins.classList.remove('activo');
+    });
+
+    overlaySkins.addEventListener('click', (e) => {
+      if (e.target === overlaySkins) overlaySkins.classList.remove('activo');
+    });
+
+    /* ---------- Mezclar (mecánica principal: fusionar skins) ---------- */
+    const botonMezclar = document.getElementById('botonMezclar');
+    const overlayMezclar = document.getElementById('overlayMezclar');
+    const contenidoMezclar = document.getElementById('contenidoMezclar');
+
+    let numeroFusiones = 0;
+    let seleccionMezcla = [];
+    const costoMezclaBase = 5000;
+
+    // Recetas especiales: combinaciones concretas de skins BASE con nombre y
+    // habilidad propios. Cualquier otra combinación usa la fórmula genérica.
+    const recetasEspeciales = {
+      'skin-fenix+skin-gorrito': {
+        nombre: 'Keke Fino Dios',
+        descHabilidad: 'Bendición de trabajo: +10% producción de ositos, pueblos y fábricas',
+        habilidad: { produccionBonus: 0.10 },
+      },
+      'skin-fenix+skin-diamante': {
+        nombre: 'Keke Inmortal',
+        descHabilidad: '+25% kekes por click y +10% producción de todas tus casas',
+        habilidad: { porcentaje: 0.25, produccionBonus: 0.10 },
+      },
+      'skin-corona+skin-cosmico': {
+        nombre: 'Keke Celestial',
+        descHabilidad: '+10% kekes por click y 15% de probabilidad de duplicar el click',
+        habilidad: { porcentaje: 0.10, duplicar: 0.15 },
+      },
+      'skin-arcoiris+skin-fantasma': {
+        nombre: 'Keke Espectral Prisma',
+        descHabilidad: '+5 kekes fijos por click y 8% de probabilidad de duplicar el click',
+        habilidad: { bonusFijo: 5, duplicar: 0.08 },
+      },
+    };
+
+    function claveReceta(idA, idB) {
+      return [idA, idB].sort().join('+');
+    }
+
+    function costoMezclaActual() {
+      return costoMezclaBase * Math.pow(2, numeroFusiones);
+    }
+
+    // Regla: se puede fusionar base+base o base+fusión, pero NUNCA fusión+fusión.
+    // Esto acota el número total de fusiones posibles (con 10 skins base: 45
+    // combinaciones base+base, y cada una de esas 45 se puede volver a mezclar
+    // con las 10 base = hasta 450 más — hay un techo, no son infinitas).
+    function combinacionValida(idA, idB) {
+      const a = skins.find(s => s.id === idA);
+      const b = skins.find(s => s.id === idB);
+      if (!a || !b) return false;
+      return !(a.fusion && b.fusion);
+    }
+
+    function renderMezclar() {
+      const candidatas = skins.filter(s => s.comprado && s.id !== 'skin-clasico');
+
+      let html = '<h2>🧬 Mezclar skins</h2>';
+      html += '<div class="sub">Elige 2 kekes que ya tengas (al menos uno debe ser una skin base, no se pueden mezclar dos fusiones entre sí). Los dos originales se consumen.</div>';
+
+      if (candidatas.length < 2) {
+        html += '<div class="sub">Necesitas al menos 2 skins compradas (fuera del Clásico) para poder fusionar. Ve a la tienda de Skins.</div>';
+      } else {
+        html += '<div class="lista-fusion">';
+        candidatas.forEach(s => {
+          const seleccionada = seleccionMezcla.includes(s.id);
+          const deshabilitada = !seleccionada && seleccionMezcla.length === 1 && !combinacionValida(seleccionMezcla[0], s.id);
+          html += `
+            <div class="card-carta card-fusion${seleccionada ? ' seleccionada' : ''}${deshabilitada ? '' : ''}"
+                 style="${deshabilitada ? 'opacity:0.35;' : ''}"
+                 data-accion="${deshabilitada ? '' : 'toggle'}" data-skin="${s.id}">
+              <div class="icono">🎂</div>
+              <div class="nombre-carta">${s.nombre}${s.fusion ? ' 🌟' : ''}</div>
+              <div class="desc-carta">${s.descHabilidad ? '✨ ' + s.descHabilidad : 'Sin habilidad especial'}</div>
+            </div>`;
+        });
+        html += '</div>';
+
+        const listo = seleccionMezcla.length === 2;
+        if (listo) {
+          const costo = costoMezclaActual();
+          const a = skins.find(s => s.id === seleccionMezcla[0]);
+          const b = skins.find(s => s.id === seleccionMezcla[1]);
+          const receta = recetasEspeciales[claveReceta(a.id, b.id)];
+          const nombreSugerido = receta ? receta.nombre : `Fusión #${numeroFusiones + 1}`;
+
+          html += `<input type="text" id="inputNombreFusion" maxlength="28" placeholder="Nombre para tu nuevo keke..." value="${nombreSugerido}"
+            style="width:100%;margin-top:14px;padding:10px;border-radius:10px;border:2px solid #eee;font-family:inherit;font-size:0.85rem;box-sizing:border-box;">`;
+          html += `<button class="boton boton-mezclar" style="position:static;transform:none;width:100%;margin-top:10px;" data-accion="fusionar">Fusionar (${formatearNumero(costo)} kekes)</button>`;
+        }
+      }
+
+      html += '<button class="cerrar-menu" data-accion="cerrar-mezclar">Cerrar</button>';
+      contenidoMezclar.innerHTML = html;
+    }
+
+    contenidoMezclar.addEventListener('click', (e) => {
+      const el = e.target.closest('[data-accion]');
+      if (!el || !el.dataset.accion) return;
+      const accion = el.dataset.accion;
+
+      if (accion === 'toggle') {
+        const id = el.dataset.skin;
+        if (seleccionMezcla.includes(id)) {
+          seleccionMezcla = seleccionMezcla.filter(s => s !== id);
+        } else if (seleccionMezcla.length < 2 && (seleccionMezcla.length === 0 || combinacionValida(seleccionMezcla[0], id))) {
+          seleccionMezcla.push(id);
+        }
+        renderMezclar();
+      } else if (accion === 'fusionar') {
+        const costo = costoMezclaActual();
+        if (seleccionMezcla.length !== 2) return;
+
+        if (total < costo) {
+          el.classList.add('shake');
+          setTimeout(() => el.classList.remove('shake'), 400);
+          return;
+        }
+
+        total -= costo;
+        actualizarContador();
+
+        const a = skins.find(s => s.id === seleccionMezcla[0]);
+        const b = skins.find(s => s.id === seleccionMezcla[1]);
+        const receta = recetasEspeciales[claveReceta(a.id, b.id)];
+        if (a.id === 'skin-fenix' || b.id === 'skin-fenix') fusionConFenix = true;
+
+        let habilidad, descHabilidad;
+        if (receta) {
+          habilidad = { ...receta.habilidad };
+          descHabilidad = receta.descHabilidad;
+        } else {
+          const bonusFijo = Math.round((((a.habilidad && a.habilidad.bonusFijo) || 0) + ((b.habilidad && b.habilidad.bonusFijo) || 0)) * 1.3) + 1;
+          const porcentaje = Math.round((((a.habilidad && a.habilidad.porcentaje) || 0) + ((b.habilidad && b.habilidad.porcentaje) || 0)) * 1.3 * 100) / 100;
+          const duplicar = Math.round(Math.max(((a.habilidad && a.habilidad.duplicar) || 0), ((b.habilidad && b.habilidad.duplicar) || 0)) * 1.2 * 100) / 100;
+          const produccionBonus = Math.round((((a.habilidad && a.habilidad.produccionBonus) || 0) + ((b.habilidad && b.habilidad.produccionBonus) || 0)) * 1.3 * 100) / 100;
+
+          habilidad = { bonusFijo, porcentaje, duplicar, produccionBonus };
+          const partes = [];
+          if (bonusFijo > 0) partes.push(`+${bonusFijo} keke${bonusFijo === 1 ? '' : 's'} por click`);
+          if (porcentaje > 0) partes.push(`+${Math.round(porcentaje * 100)}% kekes por click`);
+          if (duplicar > 0) partes.push(`${Math.round(duplicar * 100)}% de probabilidad de duplicar el click`);
+          if (produccionBonus > 0) partes.push(`+${Math.round(produccionBonus * 100)}% producción de casas`);
+          descHabilidad = partes.join(' · ');
+        }
+
+        numeroFusiones++;
+
+        const inputNombre = document.getElementById('inputNombreFusion');
+        const nombreElegido = (inputNombre && inputNombre.value.trim()) || `Fusión #${numeroFusiones}`;
+
+        const nuevaSkin = {
+          id: 'skin-fusion-' + numeroFusiones,
+          nombre: nombreElegido,
+          emoji: '🎂',
+          costo: 0,
+          comprado: true,
+          fusion: true,
+          habilidad,
+          descHabilidad,
+        };
+
+        // Las dos skins usadas se consumen
+        a.comprado = false;
+        b.comprado = false;
+        if (skinActual === a.id || skinActual === b.id) skinActual = 'skin-clasico';
+
+        skins.push(nuevaSkin);
+        skinActual = nuevaSkin.id;
+
+        seleccionMezcla = [];
+        renderMezclar();
+        checkLogros();
+      } else if (accion === 'cerrar-mezclar') {
+        overlayMezclar.classList.remove('activo');
+      }
+    });
+
+    botonMezclar.addEventListener('click', () => {
+      seleccionMezcla = [];
+      renderMezclar();
+      overlayMezclar.classList.add('activo');
+    });
+
+    overlayMezclar.addEventListener('click', (e) => {
+      if (e.target === overlayMezclar) overlayMezclar.classList.remove('activo');
+    });
+
+    /* ---------- Menú de mejoras (autoclickers + ositos) ---------- */
+    const botonMejoras = document.getElementById('botonMejoras');
+    const overlayMejoras = document.getElementById('overlayMejoras');
+    const cerrarMejoras = document.getElementById('cerrarMejoras');
+
+    botonMejoras.addEventListener('click', () => {
+      overlayMejoras.classList.add('activo');
+    });
+
+    cerrarMejoras.addEventListener('click', () => {
+      overlayMejoras.classList.remove('activo');
+    });
+
+    overlayMejoras.addEventListener('click', (e) => {
+      if (e.target === overlayMejoras) overlayMejoras.classList.remove('activo');
+    });
+
+    /* ---------- Tienda de cartas ---------- */
+    const cartasPool = [
+      { id:'azul1', color:'azul', nombre:'Dedos rápidos', emoji:'🔵',
+        descripcion:'+1 keke extra por click. Sin desventajas.', bonusFijo:1 },
+      { id:'azul2', color:'azul', nombre:'Manos de repostero', emoji:'🔵',
+        descripcion:'+2 kekes extra por click. Sin desventajas.', bonusFijo:2 },
+      { id:'azul3', color:'azul', nombre:'Suerte de horno', emoji:'🔵',
+        descripcion:'+1 keke extra por click. Sin desventajas.', bonusFijo:1 },
+      { id:'azul4', color:'azul', nombre:'Guante de horno', emoji:'🔵',
+        descripcion:'+3 kekes extra por click. Sin desventajas.', bonusFijo:3 },
+      { id:'azul5', color:'azul', nombre:'Batido casero', emoji:'🔵',
+        descripcion:'+2 kekes extra por click. Sin desventajas.', bonusFijo:2 },
+
+      { id:'amarillo1', color:'amarillo', nombre:'Batidora turbo', emoji:'🟡',
+        descripcion:'+10% kekes por click. 5% de probabilidad de perder 3% de tus kekes.',
+        porcentaje:0.10, riesgo:{ probabilidad:0.05, perdidaPorcentaje:0.03 } },
+      { id:'amarillo2', color:'amarillo', nombre:'Receta secreta', emoji:'🟡',
+        descripcion:'+12% kekes por click. 5% de probabilidad de perder 3% de tus kekes.',
+        porcentaje:0.12, riesgo:{ probabilidad:0.05, perdidaPorcentaje:0.03 } },
+      { id:'amarillo3', color:'amarillo', nombre:'Cobertura de chocolate', emoji:'🟡',
+        descripcion:'+15% kekes por click. 6% de probabilidad de perder 4% de tus kekes.',
+        porcentaje:0.15, riesgo:{ probabilidad:0.06, perdidaPorcentaje:0.04 } },
+      { id:'amarillo4', color:'amarillo', nombre:'Fondant perfecto', emoji:'🟡',
+        descripcion:'+11% kekes por click. 5% de probabilidad de perder 3% de tus kekes.',
+        porcentaje:0.11, riesgo:{ probabilidad:0.05, perdidaPorcentaje:0.03 } },
+
+      { id:'rojo1', color:'rojo', nombre:'Horno al rojo vivo', emoji:'🔴',
+        descripcion:'+30% kekes por click. 8% de probabilidad de perder 6% de tus kekes.',
+        porcentaje:0.30, riesgo:{ probabilidad:0.08, perdidaPorcentaje:0.06 } },
+      { id:'rojo2', color:'rojo', nombre:'Glaseado ardiente', emoji:'🔴',
+        descripcion:'+35% kekes por click. 8% de probabilidad de perder 6% de tus kekes.',
+        porcentaje:0.35, riesgo:{ probabilidad:0.08, perdidaPorcentaje:0.06 } },
+      { id:'rojo3', color:'rojo', nombre:'Llamas de azúcar', emoji:'🔴',
+        descripcion:'+40% kekes por click. 9% de probabilidad de perder 7% de tus kekes.',
+        porcentaje:0.40, riesgo:{ probabilidad:0.09, perdidaPorcentaje:0.07 } },
+      { id:'rojo4', color:'rojo', nombre:'Caramelo furioso', emoji:'🔴',
+        descripcion:'+45% kekes por click. 9% de probabilidad de perder 7% de tus kekes.',
+        porcentaje:0.45, riesgo:{ probabilidad:0.09, perdidaPorcentaje:0.07 } },
+
+      { id:'negro1', color:'negro', nombre:'Pacto con el diablo', emoji:'⚫',
+        descripcion:'+80% kekes por click. 10% de probabilidad de perder 10% de tus kekes.',
+        porcentaje:0.80, riesgo:{ probabilidad:0.10, perdidaPorcentaje:0.10 } },
+      { id:'negro2', color:'negro', nombre:'Ritual de medianoche', emoji:'⚫',
+        descripcion:'+100% kekes por click. 12% de probabilidad de perder 12% de tus kekes.',
+        porcentaje:1.00, riesgo:{ probabilidad:0.12, perdidaPorcentaje:0.12 } },
+      { id:'negro3', color:'negro', nombre:'Sacrificio dulce', emoji:'⚫',
+        descripcion:'+120% kekes por click. 15% de probabilidad de perder 15% de tus kekes.',
+        porcentaje:1.20, riesgo:{ probabilidad:0.15, perdidaPorcentaje:0.15 } },
+    ];
+
+    const pesoPorColor = { azul: 50, amarillo: 25, rojo: 15, negro: 10 };
+    const costoReroll = 15000;
+
+    let cartasEquipadas = [];
+    let cartasOfrecidas = null;
+    let cartaPendienteElegir = null;
+
+    const botonCartas = document.getElementById('botonCartas');
+    const overlayCartas = document.getElementById('overlayCartas');
+    const contenidoCartas = document.getElementById('contenidoCartas');
+    const slotsCartas = document.getElementById('slotsCartas');
+
+    function elegirCartasAleatorias(n) {
+      const disponibles = [...cartasPool];
+      const elegidas = [];
+      for (let i = 0; i < n && disponibles.length > 0; i++) {
+        const pesos = disponibles.map(c => pesoPorColor[c.color] || 10);
+        const totalPeso = pesos.reduce((a, b) => a + b, 0);
+        let r = Math.random() * totalPeso;
+        let idx = 0;
+        for (; idx < disponibles.length; idx++) {
+          r -= pesos[idx];
+          if (r <= 0) break;
+        }
+        if (idx >= disponibles.length) idx = disponibles.length - 1;
+        elegidas.push(disponibles[idx]);
+        disponibles.splice(idx, 1);
+      }
+      return elegidas;
+    }
+
+    function fichaCarta(c) {
+      return `
+        <div class="card-carta">
+          <div class="badge-color badge-${c.color}">${c.color.toUpperCase()}</div>
+          <div class="icono">${c.emoji}</div>
+          <div class="nombre-carta">${c.nombre}</div>
+          <div class="desc-carta">${c.descripcion}</div>
+        </div>`;
+    }
+
+    function renderTiendaCartas() {
+      let html = '<h2>Tienda de cartas</h2>';
+
+      if (cartaPendienteElegir) {
+        html += `<div class="sub">Ya tienes 3 cartas equipadas. ¿Qué carta quieres eliminar para equipar "${cartaPendienteElegir.nombre}"?</div>`;
+        html += '<div class="lista-cartas">';
+        cartasEquipadas.forEach((c, i) => {
+          html += `
+            <div class="card-carta">
+              <div class="badge-color badge-${c.color}">${c.color.toUpperCase()}</div>
+              <div class="icono">${c.emoji}</div>
+              <div class="nombre-carta">${c.nombre}</div>
+              <div class="desc-carta">${c.descripcion}</div>
+              <button data-accion="quitar" data-indice="${i}">Quitar esta</button>
+            </div>`;
+        });
+        html += '</div>';
+        html += '<button class="cerrar-menu" data-accion="cancelar-eleccion">Cancelar</button>';
+      } else if (cartasOfrecidas) {
+        html += '<div class="sub">Elige una carta para equipar</div>';
+        html += '<div class="lista-cartas">';
+        cartasOfrecidas.forEach((c, i) => {
+          html += `
+            <div class="card-carta">
+              <div class="badge-color badge-${c.color}">${c.color.toUpperCase()}</div>
+              <div class="icono">${c.emoji}</div>
+              <div class="nombre-carta">${c.nombre}</div>
+              <div class="desc-carta">${c.descripcion}</div>
+              <button data-accion="elegir" data-indice="${i}">Elegir</button>
+            </div>`;
+        });
+        html += '</div>';
+        html += `<button class="boton boton-doble" style="margin-top:16px;width:100%;" data-accion="reroll">Reroll de nuevo (${formatearNumero(costoReroll)} kekes)</button>`;
+      } else {
+        html += '<div class="sub">Gasta kekes para descubrir 3 cartas al azar (azul = más comunes, negro = las mejores... y más riesgosas)</div>';
+        html += `<button class="boton boton-doble" style="width:100%;" data-accion="reroll">Reroll (${formatearNumero(costoReroll)} kekes)</button>`;
+      }
+
+      html += '<button class="cerrar-menu" data-accion="cerrar">Cerrar</button>';
+      contenidoCartas.innerHTML = html;
+    }
+
+    contenidoCartas.addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-accion]');
+      if (!btn) return;
+      const accion = btn.dataset.accion;
+
+      if (accion === 'reroll') {
+        if (total >= costoReroll) {
+          total -= costoReroll;
+          actualizarContador();
+          cartasOfrecidas = elegirCartasAleatorias(3);
+          renderTiendaCartas();
+        } else {
+          contenidoCartas.classList.add('shake');
+          setTimeout(() => contenidoCartas.classList.remove('shake'), 400);
+        }
+      } else if (accion === 'elegir') {
+        const carta = cartasOfrecidas[Number(btn.dataset.indice)];
+        if (cartasEquipadas.length < 3) {
+          cartasEquipadas.push(carta);
+          cartasObtenidasAlgunaVez++;
+          cartasOfrecidas = null;
+          actualizarSlotsCartas();
+          checkLogros();
+        } else {
+          cartaPendienteElegir = carta;
+        }
+        renderTiendaCartas();
+      } else if (accion === 'quitar') {
+        cartasEquipadas.splice(Number(btn.dataset.indice), 1, cartaPendienteElegir);
+        cartasObtenidasAlgunaVez++;
+        cartaPendienteElegir = null;
+        cartasOfrecidas = null;
+        actualizarSlotsCartas();
+        renderTiendaCartas();
+        checkLogros();
+      } else if (accion === 'cancelar-eleccion') {
+        cartaPendienteElegir = null;
+        renderTiendaCartas();
+      } else if (accion === 'cerrar') {
+        overlayCartas.classList.remove('activo');
+      }
+    });
+
+    function actualizarSlotsCartas() {
+      slotsCartas.innerHTML = '';
+      for (let i = 0; i < 3; i++) {
+        const c = cartasEquipadas[i];
+        const slot = document.createElement('div');
+        slot.className = 'slot-carta' + (c ? ' llena' : '');
+        slot.textContent = c ? c.emoji : '➕';
+        if (c) slot.title = `${c.nombre}: ${c.descripcion}`;
+        slotsCartas.appendChild(slot);
+      }
+    }
+    actualizarSlotsCartas();
+
+    botonCartas.addEventListener('click', () => {
+      renderTiendaCartas();
+      overlayCartas.classList.add('activo');
+    });
+
+    overlayCartas.addEventListener('click', (e) => {
+      if (e.target === overlayCartas) overlayCartas.classList.remove('activo');
+    });
+
+    function procesarGananciaClick(x, y) {
+      let bonusFijoTotal = 0;
+      let bonusPorcentajeTotal = 0;
+
+      cartasEquipadas.forEach(c => {
+        if (c.bonusFijo) bonusFijoTotal += c.bonusFijo;
+        if (c.porcentaje) bonusPorcentajeTotal += c.porcentaje;
+      });
+
+      const skinEquipada = skins.find(s => s.id === skinActual);
+      let duplicar = false;
+      if (skinEquipada && skinEquipada.habilidad) {
+        const h = skinEquipada.habilidad;
+        if (h.porcentaje) bonusPorcentajeTotal += h.porcentaje;
+        if (h.bonusFijo) bonusFijoTotal += h.bonusFijo;
+        if (h.duplicar && Math.random() < h.duplicar) duplicar = true;
+      }
+
+      let ganancia = (aumentoActual + bonusFijoTotal) * (1 + bonusPorcentajeTotal + bonusLogrosPorcentaje + rebirths * 0.10);
+      if (duplicar) ganancia *= 2;
+      ganancia = Math.max(1, Math.floor(ganancia));
+
+      total += ganancia;
+      mostrarTextoFlotante(x, y, '+' + formatearNumero(ganancia));
+
+      cartasEquipadas.forEach(c => {
+        if (c.riesgo && Math.random() < c.riesgo.probabilidad) {
+          const perdida = Math.floor(total * c.riesgo.perdidaPorcentaje);
+          total = Math.max(0, total - perdida);
+          perdidasPorCartas++;
+          if (total === 0 && maxTotalAlcanzado >= 100000) llegoACeroDesdeCienMil = true;
+          if (perdida > 0) mostrarTextoFlotante(x, y + 26, '-' + formatearNumero(perdida), 'perdida');
+        }
+      });
+
+      actualizarContador();
+    }
+
+    /* ---------- Mejora de combo ---------- */
+    botonDoble.addEventListener('click', () => {
+      const costoFinal = Math.floor(costoMejora * reduccion('costosBaratos'));
+      if (total >= costoFinal) {
+        total -= costoFinal;
+        actualizarContador();
+        comprasMejora++;
+        aumentoActual = getAumento(comprasMejora);
+        costoMejora = getCosto(comprasMejora + 1);
+        actualizarBotonDoble();
+        checkLogros();
+      } else {
+        botonDoble.classList.add('shake');
+        setTimeout(() => botonDoble.classList.remove('shake'), 400);
+      }
+    });
+
+    actualizarBotonDoble();
+
+    /* ---------- Autoclicker (4 niveles, cada uno más rápido) ---------- */
+    const nivelesAutoclicker = [
+      { costo: 28000,  intervalo: 2000, nombre: 'Autoclicker I' },
+      { costo: 75000,  intervalo: 1500, nombre: 'Autoclicker II' },
+      { costo: 200000, intervalo: 1000, nombre: 'Autoclicker III' },
+      { costo: 450000, intervalo: 500,  nombre: 'Autoclicker IV' },
+    ];
+    const botonesAutoclicker = [
+      document.getElementById('botonAutoclicker1'),
+      document.getElementById('botonAutoclicker2'),
+      document.getElementById('botonAutoclicker3'),
+      document.getElementById('botonAutoclicker4'),
+    ];
+
+    let nivelAutoclickerActual = 0; // 0 = ninguno comprado todavía
+    let idIntervaloAutoclicker = null;
+
+    function iniciarAutoclicker(intervaloMs) {
+      if (idIntervaloAutoclicker) clearInterval(idIntervaloAutoclicker);
+      const intervaloFinal = Math.floor(intervaloMs * reduccion('autoclickVeloz'));
+      idIntervaloAutoclicker = setInterval(() => {
+        const x = window.innerWidth / 2;
+        const y = window.innerHeight / 2;
+        soltarKeke(x, y);
+        procesarGananciaClick(x, y);
+      }, intervaloFinal);
+    }
+
+    function actualizarBotonesAutoclicker() {
+      nivelesAutoclicker.forEach((nivel, i) => {
+        const btn = botonesAutoclicker[i];
+        if (i < nivelAutoclickerActual) {
+          btn.textContent = `${nivel.nombre} 🤖 ✅`;
+          btn.disabled = true;
+        } else if (i === nivelAutoclickerActual) {
+          btn.textContent = `${nivel.nombre} 🤖 (${formatearNumero(nivel.costo)})`;
+          btn.disabled = false;
+        } else {
+          btn.textContent = `${nivel.nombre} 🤖 🔒`;
+          btn.disabled = true;
+        }
+      });
+    }
+
+    botonesAutoclicker.forEach((btn, i) => {
+      btn.addEventListener('click', () => {
+        if (i !== nivelAutoclickerActual) return; // solo se puede comprar el siguiente nivel en orden
+
+        const nivel = nivelesAutoclicker[i];
+        if (total >= nivel.costo) {
+          total -= nivel.costo;
+          actualizarContador();
+          nivelAutoclickerActual++;
+          iniciarAutoclicker(nivel.intervalo);
+          actualizarBotonesAutoclicker();
+          checkLogros();
+        } else {
+          btn.classList.add('shake');
+          setTimeout(() => btn.classList.remove('shake'), 400);
+        }
+      });
+    });
+
+    actualizarBotonesAutoclicker();
+
+    /* ---------- Productores (kekes/seg): ositos, pueblos trabajadores, fábricas ---------- */
+    /* Cada unidad da siempre la misma producción fija. El costo de la SIGUIENTE
+       unidad sube un % cada vez que compras una, así que nunca se vuelve más
+       rentable que su costo (esto era lo que rompía a los ositos antes). */
+    const productores = [
+      {
+        id: 'osito', nombre: 'Osito', emoji: '🐻',
+        produccionBase: 1, costoBase: 40, factorCosto: 1.16,
+        cantidad: 0, costoActual: 40,
+        mejoras: [
+          { nombre: 'Deflación I', costo: 3000, factor: 2, comprada: false,
+            descripcion: 'Los kekes de tus ositos valen el doble (x2 producción).' },
+          { nombre: 'Deflación II', costo: 18000, factor: 2, comprada: false,
+            descripcion: 'Vuelve a duplicar la producción de tus ositos (x2 adicional).' },
+          { nombre: 'Horno Industrial', costo: 90000, factor: 3, comprada: false,
+            descripcion: 'Automatiza en masa: x3 producción adicional de tus ositos.' },
+        ],
+      },
+      {
+        id: 'pueblo', nombre: 'Pueblo trabajador', emoji: '🏘️',
+        produccionBase: 5, costoBase: 2500, factorCosto: 1.17,
+        cantidad: 0, costoActual: 2500,
+        mejoras: [
+          { nombre: 'Gremio de reposteros', costo: 20000, factor: 2, comprada: false,
+            descripcion: 'x2 producción de tus pueblos trabajadores.' },
+          { nombre: 'Cooperativa dulce', costo: 100000, factor: 2, comprada: false,
+            descripcion: 'x2 producción adicional de tus pueblos.' },
+          { nombre: 'Ayuntamiento del azúcar', costo: 400000, factor: 3, comprada: false,
+            descripcion: 'x3 producción adicional de tus pueblos.' },
+        ],
+      },
+      {
+        id: 'fabrica', nombre: 'Fábrica de kekes', emoji: '🏭',
+        produccionBase: 25, costoBase: 80000, factorCosto: 1.18,
+        cantidad: 0, costoActual: 80000,
+        mejoras: [
+          { nombre: 'Cinta transportadora', costo: 600000, factor: 2, comprada: false,
+            descripcion: 'x2 producción de tus fábricas.' },
+          { nombre: 'Turno nocturno', costo: 3000000, factor: 2, comprada: false,
+            descripcion: 'x2 producción adicional de tus fábricas.' },
+          { nombre: 'Automatización total', costo: 12000000, factor: 3, comprada: false,
+            descripcion: 'x3 producción adicional de tus fábricas.' },
+        ],
+      },
+    ];
+
+    function multiplicadorMejoras(p) {
+      let f = 1;
+      p.mejoras.forEach(m => { if (m.comprada) f *= m.factor; });
+      return f;
+    }
+
+    function produccionDe(p) {
+      return p.cantidad * p.produccionBase * multiplicadorMejoras(p);
+    }
+
+    // Habilidades de fusión especiales pueden dar un % extra a TODA la producción
+    function bonusProduccionGlobal() {
+      const skinEquipada = skins.find(s => s.id === skinActual);
+      if (skinEquipada && skinEquipada.habilidad && skinEquipada.habilidad.produccionBonus) {
+        return skinEquipada.habilidad.produccionBonus;
+      }
+      return 0;
+    }
+
+    function produccionTotal() {
+      const base = productores.reduce((suma, p) => suma + produccionDe(p), 0);
+      return Math.floor(base * (1 + bonusProduccionGlobal()));
+    }
+
+    function costoProductorFinal(p) {
+      return Math.floor(p.costoActual * reduccion('productoresBaratos'));
+    }
+
+    function renderProductores() {
+      const cont = document.getElementById('contenidoProductores');
+      if (!cont) return;
+      let html = '';
+
+      productores.forEach(p => {
+        html += `<div style="margin-bottom:14px;">`;
+        html += `<button class="boton boton-ositos" style="width:100%;max-width:none;" data-accion="comprar-productor" data-id="${p.id}">
+          ${p.emoji} ${p.nombre} +${formatearNumero(p.produccionBase * multiplicadorMejoras(p))}/seg (${formatearNumero(costoProductorFinal(p))})
+          ${p.cantidad > 0 ? ` — tienes ${p.cantidad}, produciendo +${formatearNumero(produccionDe(p))}/seg` : ''}
+        </button>`;
+        html += `<div class="lista-mejoras" style="margin-top:8px;">`;
+        p.mejoras.forEach((m, i) => {
+          const previasCompradas = p.mejoras.slice(0, i).every(x => x.comprada);
+          if (m.comprada) {
+            html += `<button class="boton boton-ositos" disabled>${m.nombre} ✅</button>`;
+          } else if (previasCompradas) {
+            html += `<button class="boton boton-ositos" data-accion="comprar-mejora-productor" data-id="${p.id}" data-indice="${i}" title="${m.descripcion}">${m.nombre} (${formatearNumero(m.costo)})</button>`;
+          } else {
+            html += `<button class="boton boton-ositos" disabled>${m.nombre} 🔒</button>`;
+          }
+        });
+        html += `</div></div>`;
+      });
+
+      cont.innerHTML = html;
+      actualizarKps();
+    }
+
+    document.getElementById('contenidoProductores').addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-accion]');
+      if (!btn) return;
+      const p = productores.find(x => x.id === btn.dataset.id);
+      if (!p) return;
+
+      if (btn.dataset.accion === 'comprar-productor') {
+        const costoFinal = costoProductorFinal(p);
+        if (total >= costoFinal) {
+          total -= costoFinal;
+          actualizarContador();
+          if (p.id === 'pueblo' && p.cantidad === 0 && !ositoAlgunaVezComprado) logroPuebloSinOsito = true;
+          if (p.id === 'osito') ositoAlgunaVezComprado = true;
+          p.cantidad++;
+          p.costoActual = Math.floor(p.costoActual * p.factorCosto);
+          if (p.id === 'pueblo') mostrarCasasPopup();
+          if (p.id === 'fabrica') mostrarFabricaPopup();
+          renderProductores();
+          checkLogros();
+        } else {
+          btn.classList.add('shake');
+          setTimeout(() => btn.classList.remove('shake'), 400);
+        }
+      } else if (btn.dataset.accion === 'comprar-mejora-productor') {
+        const m = p.mejoras[Number(btn.dataset.indice)];
+        if (total >= m.costo) {
+          total -= m.costo;
+          actualizarContador();
+          m.comprada = true;
+          renderProductores();
+        } else {
+          btn.classList.add('shake');
+          setTimeout(() => btn.classList.remove('shake'), 400);
+        }
+      }
+    });
+
+    renderProductores();
+
+    setInterval(() => {
+      const produccionActual = produccionTotal();
+      if (produccionActual > 0) {
+        total += produccionActual;
+        actualizarContador();
+      }
+    }, 1000);
+
+    function actualizarKps() {
+      document.getElementById('kps').textContent = formatearNumero(produccionTotal());
+    }
+    actualizarKps();
+
+    /* ---------- Logros (20 normales + 5 secretos) ---------- */
+    const logros = [
+      { id:'l1', nombre:'Primer click', descripcion:'Haz tu primer click.',
+        condicion: () => contadorClicksManual >= 1, recompensa: { kekes: 50 } },
+      { id:'l2', nombre:'Cien clicks', descripcion:'Haz 100 clicks.',
+        condicion: () => contadorClicksManual >= 100, recompensa: { kekes: 300 } },
+      { id:'l3', nombre:'Mil clicks', descripcion:'Haz 1000 clicks.',
+        condicion: () => contadorClicksManual >= 1000, recompensa: { porcentaje: 0.01 } },
+      { id:'l4', nombre:'Diez mil kekes', descripcion:'Alcanza 10,000 kekes en total.',
+        condicion: () => maxTotalAlcanzado >= 10000, recompensa: { kekes: 1000 } },
+      { id:'l5', nombre:'Cien mil kekes', descripcion:'Alcanza 100,000 kekes en total.',
+        condicion: () => maxTotalAlcanzado >= 100000, recompensa: { porcentaje: 0.01 } },
+      { id:'l6', nombre:'Millonario dulce', descripcion:'Alcanza 1,000,000 de kekes.',
+        condicion: () => maxTotalAlcanzado >= 1000000, recompensa: { porcentaje: 0.02 } },
+      { id:'l7', nombre:'Multimillonario', descripcion:'Alcanza 1,000,000,000 de kekes.',
+        condicion: () => maxTotalAlcanzado >= 1000000000, recompensa: { porcentaje: 0.03 } },
+      { id:'l8', nombre:'Primera skin', descripcion:'Compra tu primera skin de paga.',
+        condicion: () => skins.some(s => s.comprado && s.costo > 0 && !s.fusion), recompensa: { kekes: 500 } },
+      { id:'l9', nombre:'Coleccionista', descripcion:'Compra 5 skins distintas (sin contar fusiones).',
+        condicion: () => skins.filter(s => s.comprado && s.costo > 0 && !s.fusion).length >= 5, recompensa: { porcentaje: 0.01 } },
+      { id:'l10', nombre:'Coleccionista experto', descripcion:'Compra todas las skins base disponibles.',
+        condicion: () => skins.filter(s => !s.fusion && s.costo > 0).every(s => s.comprado), recompensa: { porcentaje: 0.03 } },
+      { id:'l11', nombre:'Primera fusión', descripcion:'Realiza tu primera fusión.',
+        condicion: () => numeroFusiones >= 1, recompensa: { porcentaje: 0.02 } },
+      { id:'l12', nombre:'Alquimista', descripcion:'Realiza 5 fusiones.',
+        condicion: () => numeroFusiones >= 5, recompensa: { porcentaje: 0.03 } },
+      { id:'l13', nombre:'Primera carta', descripcion:'Consigue tu primera carta.',
+        condicion: () => cartasObtenidasAlgunaVez >= 1, recompensa: { kekes: 500 } },
+      { id:'l14', nombre:'Mano completa', descripcion:'Equipa 3 cartas al mismo tiempo.',
+        condicion: () => cartasEquipadas.length >= 3, recompensa: { porcentaje: 0.02 } },
+      { id:'l15', nombre:'Primer osito', descripcion:'Contrata tu primer osito.',
+        condicion: () => productores.find(p => p.id === 'osito').cantidad >= 1, recompensa: { kekes: 200 } },
+      { id:'l16', nombre:'Pueblo próspero', descripcion:'Ten 10 pueblos trabajadores.',
+        condicion: () => productores.find(p => p.id === 'pueblo').cantidad >= 10, recompensa: { porcentaje: 0.02 } },
+      { id:'l17', nombre:'Imperio industrial', descripcion:'Ten 5 fábricas de kekes.',
+        condicion: () => productores.find(p => p.id === 'fabrica').cantidad >= 5, recompensa: { porcentaje: 0.03 } },
+      { id:'l18', nombre:'Velocista', descripcion:'Compra el Autoclicker IV.',
+        condicion: () => nivelAutoclickerActual >= 4, recompensa: { porcentaje: 0.02 } },
+      { id:'l19', nombre:'Mejorador serial', descripcion:'Compra 10 mejoras de combo.',
+        condicion: () => comprasMejora >= 10, recompensa: { porcentaje: 0.02 } },
+      { id:'l20', nombre:'Arriesgado', descripcion:'Sobrevive a perder kekes por una carta, 10 veces.',
+        condicion: () => perdidasPorCartas >= 10, recompensa: { porcentaje: 0.01 } },
+
+      // Secretos: no muestran su descripción hasta desbloquearse
+      { id:'s1', secreto:true, nombre:'Incumplimiento de la obligación',
+        descripcion:'Adquiere un pueblo trabajador sin haber contratado nunca un osito.',
+        condicion: () => logroPuebloSinOsito, recompensa: { kekes: 2000 } },
+      { id:'s2', secreto:true, nombre:'Clickeador incansable',
+        descripcion:'Haz 1000 clicks sin haber comprado ningún autoclicker.',
+        condicion: () => contadorClicksManual >= 1000 && nivelAutoclickerActual === 0, recompensa: { porcentaje: 0.05 } },
+      { id:'s3', secreto:true, nombre:'Trato con el ave de fuego',
+        descripcion:'Fusiona una skin usando al Fénix.',
+        condicion: () => fusionConFenix, recompensa: { porcentaje: 0.05 } },
+      { id:'s4', secreto:true, nombre:'Todo o nada',
+        descripcion:'Pierde todos tus kekes por una carta después de haber tenido más de 100,000.',
+        condicion: () => llegoACeroDesdeCienMil, recompensa: { porcentaje: 0.02 } },
+      { id:'s5', secreto:true, nombre:'El osito ve todo',
+        descripcion:'Ten al menos un osito, un pueblo y una fábrica al mismo tiempo.',
+        condicion: () => productores.every(p => p.cantidad >= 1), recompensa: { porcentaje: 0.05 } },
+    ];
+
+    function aplicarRecompensa(r) {
+      if (r.kekes) { total += r.kekes; actualizarContador(); }
+      if (r.porcentaje) { bonusLogrosPorcentaje += r.porcentaje; }
+    }
+
+    function mostrarToastLogro(logro) {
+      const toast = document.createElement('div');
+      toast.className = 'toast-logro';
+      toast.innerHTML = `🏆 <strong>Logro desbloqueado:</strong><br>${logro.nombre}`;
+      document.body.appendChild(toast);
+      setTimeout(() => toast.classList.add('mostrar'), 10);
+      setTimeout(() => {
+        toast.classList.remove('mostrar');
+        setTimeout(() => toast.remove(), 500);
+      }, 4000);
+    }
+
+    function checkLogros() {
+      logros.forEach(l => {
+        if (!l.desbloqueado && l.condicion()) {
+          l.desbloqueado = true;
+          aplicarRecompensa(l.recompensa);
+          mostrarToastLogro(l);
+        }
+      });
+      if (document.getElementById('overlayLogros').classList.contains('activo')) renderLogros();
+    }
+
+    function renderLogros() {
+      const cont = document.getElementById('contenidoLogros');
+      const normales = logros.filter(l => !l.secreto);
+      const secretos = logros.filter(l => l.secreto);
+      const desbloqueados = logros.filter(l => l.desbloqueado).length;
+
+      let html = '<h2>🏆 Logros</h2>';
+      html += `<div class="sub">${desbloqueados} / ${logros.length} desbloqueados</div>`;
+      html += '<div class="lista-logros">';
+      normales.forEach(l => {
+        html += `<div class="item-logro${l.desbloqueado ? ' desbloqueado' : ''}">
+          <div class="nombre-logro">${l.desbloqueado ? '✅' : '🔒'} ${l.nombre}</div>
+          <div class="desc-logro">${l.descripcion}</div>
+        </div>`;
+      });
+      html += '</div>';
+
+      html += '<div class="sub" style="margin-top:16px;">🤫 Secretos</div>';
+      html += '<div class="lista-logros">';
+      secretos.forEach(l => {
+        if (l.desbloqueado) {
+          html += `<div class="item-logro desbloqueado secreto">
+            <div class="nombre-logro">✅ ${l.nombre}</div>
+            <div class="desc-logro">${l.descripcion}</div>
+          </div>`;
+        } else {
+          html += `<div class="item-logro secreto">
+            <div class="nombre-logro">🔒 ???</div>
+            <div class="desc-logro">Logro secreto sin descubrir.</div>
+          </div>`;
+        }
+      });
+      html += '</div>';
+
+      html += '<button class="cerrar-menu" id="cerrarLogros">Cerrar</button>';
+      cont.innerHTML = html;
+      document.getElementById('cerrarLogros').addEventListener('click', () => {
+        document.getElementById('overlayLogros').classList.remove('activo');
+      });
+    }
+
+    document.getElementById('botonLogros').addEventListener('click', () => {
+      renderLogros();
+      document.getElementById('overlayLogros').classList.add('activo');
+    });
+    document.getElementById('overlayLogros').addEventListener('click', (e) => {
+      if (e.target === document.getElementById('overlayLogros')) e.target.classList.remove('activo');
+    });
+
+    checkLogros();
+
+    /* ---------- Renacer (prestigio) ---------- */
+    function nodoActivo(id) {
+      const n = arbolRenacimiento.find(x => x.id === id);
+      return !!(n && n.comprado);
+    }
+
+    function reduccion(id) {
+      return nodoActivo(id) ? 0.9 : 1;
+    }
+
+    function renderRenacer() {
+      const cont = document.getElementById('contenidoRenacer');
+      const puede = total >= costoRenacer;
+
+      let html = '<h2>🌌 Renacer</h2>';
+      html += `<div class="sub">Progreso: ${formatearNumero(total)} / ${formatearNumero(costoRenacer)} kekes necesarios</div>`;
+      html += `<div class="sub">✨ Esencia: ${esencia} — Renacimientos: ${rebirths} (bonus actual: +${rebirths * 10}% por click)</div>`;
+      html += '<div class="sub" style="margin-top:10px;">Al renacer: pierdes tus kekes, mejoras de combo, autoclickers y casas productoras. Conservas skins, fusiones, cartas y logros. Ganas 1 esencia y +10% permanente a tus kekes por click.</div>';
+
+      html += `<button class="boton boton-renacer" style="position:static;width:100%;margin:14px 0;${puede ? '' : 'opacity:0.5;'}" data-accion="renacer" ${puede ? '' : 'disabled'}>Renacer ahora</button>`;
+
+      html += '<div class="sub" style="margin-top:8px;">🌳 Árbol de mejoras de renacimiento</div>';
+      html += '<div class="lista-mejoras">';
+      arbolRenacimiento.forEach(n => {
+        if (n.comprado) {
+          html += `<button class="boton boton-ositos" disabled title="${n.descripcion}">${n.nombre} ✅</button>`;
+        } else {
+          html += `<button class="boton boton-ositos" data-accion="comprar-nodo" data-id="${n.id}" title="${n.descripcion}" ${esencia >= n.costo ? '' : 'disabled'}>${n.nombre} (${n.costo} ✨)</button>`;
+        }
+      });
+      html += '</div>';
+
+      html += '<button class="cerrar-menu" data-accion="cerrar-renacer">Cerrar</button>';
+      cont.innerHTML = html;
+    }
+
+    document.getElementById('contenidoRenacer').addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-accion]');
+      if (!btn) return;
+
+      if (btn.dataset.accion === 'renacer') {
+        if (total < costoRenacer) return;
+        const confirmar = confirm('¿Seguro que quieres renacer? Perderás tus kekes, mejoras de combo, autoclickers y casas productoras (conservas skins, fusiones, cartas y logros) a cambio de +10% permanente por click y 1 esencia.');
+        if (!confirmar) return;
+
+        rebirths++;
+        esencia += 1;
+
+        total = nodoActivo('bendicionInicial') ? 500 : 0;
+        comprasMejora = 0;
+        aumentoActual = 1;
+        costoMejora = getCosto(1);
+
+        productores.forEach(p => {
+          p.cantidad = 0;
+          p.costoActual = p.costoBase;
+          p.mejoras.forEach(m => { m.comprada = false; });
+        });
+
+        nivelAutoclickerActual = 0;
+        if (idIntervaloAutoclicker) { clearInterval(idIntervaloAutoclicker); idIntervaloAutoclicker = null; }
+
+        document.body.classList.add('era-moderna');
+
+        actualizarContador();
+        actualizarBotonDoble();
+        actualizarBotonesAutoclicker();
+        renderProductores();
+        renderRenacer();
+        checkLogros();
+      } else if (btn.dataset.accion === 'comprar-nodo') {
+        const nodo = arbolRenacimiento.find(n => n.id === btn.dataset.id);
+        if (nodo && esencia >= nodo.costo) {
+          esencia -= nodo.costo;
+          nodo.comprado = true;
+          renderRenacer();
+        }
+      } else if (btn.dataset.accion === 'cerrar-renacer') {
+        document.getElementById('overlayRenacer').classList.remove('activo');
+      }
+    });
+
+    document.getElementById('botonRenacer').addEventListener('click', () => {
+      renderRenacer();
+      document.getElementById('overlayRenacer').classList.add('activo');
+    });
+    document.getElementById('overlayRenacer').addEventListener('click', (e) => {
+      if (e.target === document.getElementById('overlayRenacer')) e.target.classList.remove('activo');
+    });
+
+    /* ---------- Ositos de goma de fondo (con cuerpo) ---------- */
+    const coloresGoma = ['#ff4d6d', '#4dd97a', '#ffd23f', '#ff9f45', '#5aa9ff'];
+
+    function pasarOsoGoma() {
+      const oso = document.createElement('div');
+      oso.className = 'oso-goma';
+      oso.style.color = coloresGoma[Math.floor(Math.random() * coloresGoma.length)];
+      oso.style.bottom = (2 + Math.random() * 22) + 'vh';
+
+      const giro = Math.random() < 0.5 ? 'scaleX(-1)' : 'scaleX(1)';
+      oso.innerHTML = `
+        <div style="position:relative; width:100%; height:100%; transform:${giro};">
+          <div class="cabeza">
+            <div class="oreja izq"></div>
+            <div class="oreja der"></div>
+          </div>
+          <div class="brazo izq"></div>
+          <div class="brazo der"></div>
+          <div class="torso">
+            <div class="brillo"></div>
+          </div>
+          <div class="pierna izq"></div>
+          <div class="pierna der"></div>
+        </div>
+      `;
+
+      const duracion = 9 + Math.random() * 6;
+      oso.style.animationDuration = duracion + 's, 0.5s';
+
+      if (Math.random() < 0.5) {
+        oso.style.transform = 'scaleX(-1)';
+      }
+
+      document.body.appendChild(oso);
+      setTimeout(() => oso.remove(), duracion * 1000);
+    }
+
+    function programarOsoGoma() {
+      const espera = 12000 + Math.random() * 8000; // entre 12 y 20 segundos
+      setTimeout(() => {
+        pasarOsoGoma();
+        programarOsoGoma();
+      }, espera);
+    }
+
+    programarOsoGoma();
+
+    /* ---------- Keke gigante de fondo ---------- */
+    const emojisFondo = ['🎂', '🍰'];
+
+    function pasarKekeFondo() {
+      const el = document.createElement('div');
+      el.className = 'keke-fondo';
+      el.textContent = emojisFondo[Math.floor(Math.random() * emojisFondo.length)];
+      el.style.top = (10 + Math.random() * 45) + 'vh';
+
+      document.body.appendChild(el);
+
+      setTimeout(() => el.remove(), 16000);
+    }
+
+    function programarKekeFondo() {
+      const espera = 8000 + Math.random() * 7000; // entre 8 y 15 segundos
+      setTimeout(() => {
+        pasarKekeFondo();
+        programarKekeFondo();
+      }, espera);
+    }
+
+    programarKekeFondo();
+
+    /* ---------- Noticiero ---------- */
+    const noticias = [
+      { titular: 'CIENTÍFICOS DISCUTEN SOBRE LA NATURALEZA DE LA GRAVEDAD.', dialogo: [
+          'Científico: "La gravedad es una interacción fundamental que atrae los cuerpos con masa."',
+          'Osito: "No, la gravedad es cuando algo pesa mucho."',
+          'Científico: "Eso es el peso."',
+          'Osito: "Exacto. Entonces tengo razón."',
+        ]},
+      { titular: 'ECONOMISTAS DEBATEN EL FUTURO DE LA ECONOMÍA LOCAL.', dialogo: [
+          'Economista: "Si aumentamos la producción, debemos analizar la inflación."',
+          'Osito: "Yo creo que inflación significa que algo está inflado."',
+          'Economista: "No."',
+          'Osito: "Entonces ¿por qué se llama así?"',
+        ]},
+      { titular: 'INGENIEROS DISCUTEN SOBRE UNA NUEVA COMPUTADORA.', dialogo: [
+          'Ingeniero: "El procesador tiene 16 núcleos."',
+          'Osito: "¿Entonces tiene 16 cerebros?"',
+          'Ingeniero: "No funciona así."',
+          'Osito: "¿Y dónde están los 16 cerebros?"',
+        ]},
+      { titular: 'HISTORIADORES INTENTAN EXPLICAR UN ACONTECIMIENTO DEL PASADO.', dialogo: [
+          'Historiador: "Este acontecimiento ocurrió hace aproximadamente 300 años."',
+          'Osito: "Imposible."',
+          'Historiador: "¿Por qué?"',
+          'Osito: "Porque yo no estaba ahí."',
+        ]},
+      { titular: 'MÉDICOS DISCUTEN SOBRE LA IMPORTANCIA DE DORMIR.', dialogo: [
+          'Médico: "Dormir es fundamental para la recuperación del organismo."',
+          'Osito: "Yo duermo 14 horas y sigo cansado."',
+          'Médico: "Quizá deberías revisar tus hábitos."',
+          'Osito: "Mi hábito es dormir."',
+          'Médico: "Ese no es el problema."',
+          'Osito: "Entonces necesito dormir más."',
+        ]},
+      'OSITO INTENTA HORNEAR KEKES CASEROS Y EXPLOTA SU CASA',
+      'OSITO DEMANDA A UNA PANADERÍA PORQUE SU KEKE TENÍA DEMASIADO KEKE',
+      'CIENTÍFICOS DESCUBREN QUE LOS KEKES NO CRECEN EN LOS ÁRBOLES',
+      'OSITO COMPRA UNA FÁBRICA DE KEKES CON 7 KEKES',
+      'SE REPORTAN EXTRAÑOS RUIDOS PROVENIENTES DE UNA CAJA DE KEKES',
+      'OSITO INTENTA COMER 500 KEKES EN UN MINUTO. RÉCORD: 3',
+      'PANADERO LOCAL AFIRMA HABER INVENTADO EL KEKE PERFECTO. NADIE LE CREE.',
+      'OSITO DESCUBRE QUE PUEDE GANAR DINERO HACIENDO CLICS. ECONOMISTAS CONFUNDIDOS.',
+    ];
+
+    let ultimaNoticiaIdx = -1;
+    const elNoticiero = document.getElementById('noticiero');
+
+    function mostrarNoticiaAleatoria() {
+      elNoticiero.classList.remove('mostrar');
+      setTimeout(() => {
+        let idx;
+        do { idx = Math.floor(Math.random() * noticias.length); } while (idx === ultimaNoticiaIdx && noticias.length > 1);
+        ultimaNoticiaIdx = idx;
+        const n = noticias[idx];
+
+        if (typeof n === 'string') {
+          elNoticiero.innerHTML = `<div class="titular">📰 ${n}</div>`;
+        } else {
+          elNoticiero.innerHTML =
+            `<div class="titular">📰 ${n.titular}</div>` +
+            n.dialogo.map(linea => `<span class="linea-dialogo">${linea}</span>`).join('');
+        }
+        elNoticiero.classList.add('mostrar');
+      }, 500);
+    }
+
+    mostrarNoticiaAleatoria();
+    setInterval(mostrarNoticiaAleatoria, 10000);
+  </script>
+
+</body>
+</html>
